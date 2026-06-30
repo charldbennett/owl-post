@@ -2487,3 +2487,406 @@ body {
     transform-origin: left bottom;
   }
 }
+
+/* Gameplay tuning and clearer Owl Post composition */
+.post-stats {
+  grid-template-columns: repeat(5, minmax(72px, 1fr));
+  width: min(640px, 100%);
+}
+
+.stat:last-child strong {
+  color: #8f4c3d;
+}
+
+.chaos {
+  min-width: 300px;
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(153, 84, 102, 0.34);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255, 241, 197, 0.74), transparent 34%),
+    linear-gradient(180deg, rgba(255, 247, 225, 0.86), rgba(235, 204, 164, 0.78));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.42), 0 8px 20px rgba(91, 55, 35, 0.12);
+}
+
+.chaos > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #654836;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.chaos > span strong {
+  color: var(--burgundy);
+  font-size: 1rem;
+}
+
+.chaos-meter {
+  width: 280px;
+  max-width: 100%;
+  height: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 58, 38, 0.18);
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(90deg, rgba(91, 58, 38, 0.16) 0 2px, transparent 2px 20%),
+    rgba(83, 58, 42, 0.14);
+}
+
+.chaos-meter span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9fb270, #e0b85b, #c86f3d, #995466);
+  box-shadow: 0 0 14px rgba(200, 111, 61, 0.32);
+  transition: width 180ms linear, filter 180ms ease;
+}
+
+.chaos-meter span[data-level="medium"] {
+  filter: saturate(1.12);
+}
+
+.chaos-meter span[data-level="high"] {
+  filter: saturate(1.3) brightness(1.02);
+  animation: chaosWarning 760ms ease-in-out infinite alternate;
+}
+
+.control-bar {
+  align-items: center;
+}
+
+.oak-trunk {
+  left: 58%;
+  bottom: 95px;
+  width: 214px;
+  height: 286px;
+}
+
+.canopy-a {
+  left: 46%;
+  bottom: 274px;
+  width: 332px;
+  height: 168px;
+}
+
+.canopy-b {
+  left: 60%;
+  bottom: 306px;
+  width: 286px;
+  height: 132px;
+  opacity: 0.76;
+}
+
+.branch-a {
+  left: 52%;
+  bottom: 286px;
+  width: 168px;
+}
+
+.branch-b {
+  left: 66%;
+  bottom: 238px;
+  width: 145px;
+}
+
+.round-door {
+  left: calc(58% + 74px);
+}
+
+.mail-slot-a {
+  left: calc(58% + 32px);
+}
+
+.mail-slot-b {
+  left: calc(58% + 135px);
+}
+
+.mail-slot-c {
+  left: calc(58% + 86px);
+}
+
+.window-a {
+  left: calc(58% + 42px);
+}
+
+.window-b {
+  left: calc(58% + 144px);
+}
+
+.parcel-chute {
+  left: calc(58% + 148px);
+  width: 96px;
+}
+
+.lantern-a {
+  left: calc(58% + 42px);
+}
+
+.lantern-b {
+  left: calc(58% + 160px);
+}
+
+.owl-nest-a {
+  left: calc(58% + 162px);
+}
+
+.owl-nest-b {
+  left: calc(58% + 18px);
+}
+
+.owl-pal-a {
+  left: calc(58% + 210px);
+}
+
+.owl-pal-b {
+  left: calc(58% + 104px);
+}
+
+.paper-plane-a {
+  left: 40%;
+}
+
+.paper-plane-b {
+  left: 79%;
+}
+
+.tree-a {
+  left: 2%;
+  opacity: 0.42;
+}
+
+.tree-b {
+  right: 3%;
+  opacity: 0.44;
+}
+
+.tree-c {
+  left: 43%;
+  opacity: 0.35;
+}
+
+.mailbox {
+  left: 33%;
+}
+
+.wooden-sign {
+  left: 42%;
+  bottom: 118px;
+}
+
+.wooden-sign::before {
+  content: "Owl Post Route";
+  left: -62px;
+  top: 8px;
+  width: 132px;
+  height: 28px;
+  border-radius: 6px 18px 18px 6px;
+  clip-path: polygon(0 0, 82% 0, 100% 50%, 82% 100%, 0 100%);
+  font-size: 0.72rem;
+}
+
+.apprentice-owl .owl-body {
+  left: 8px;
+  top: 16px;
+  width: 46px;
+  height: 54px;
+  border-radius: 54% 54% 46% 46%;
+  background:
+    radial-gradient(circle at 50% 68%, #f1d49c 0 25%, transparent 26%),
+    radial-gradient(circle at 32% 42%, rgba(255, 244, 210, 0.18) 0 5%, transparent 6%),
+    radial-gradient(circle at 68% 42%, rgba(255, 244, 210, 0.18) 0 5%, transparent 6%),
+    linear-gradient(180deg, #6f8fa6, #43687b);
+  box-shadow:
+    inset -8px -6px 0 rgba(32, 50, 60, 0.16),
+    0 4px 8px rgba(59, 39, 27, 0.12);
+}
+
+.apprentice-owl .owl-face {
+  left: 10px;
+  top: 11px;
+  width: 42px;
+  height: 36px;
+  border-radius: 50% 50% 44% 44%;
+  background:
+    radial-gradient(circle at 35% 50%, #fff0c8 0 25%, transparent 26%),
+    radial-gradient(circle at 65% 50%, #fff0c8 0 25%, transparent 26%),
+    linear-gradient(180deg, #7f9bae, #4c7184);
+  box-shadow: inset 0 -5px 0 rgba(53, 85, 101, 0.18);
+}
+
+.apprentice-owl .owl-face::before {
+  position: absolute;
+  content: "";
+  left: 9px;
+  top: 5px;
+  width: 24px;
+  height: 10px;
+  border-radius: 50%;
+  border-top: 3px solid rgba(63, 94, 107, 0.55);
+}
+
+.apprentice-owl .owl-ear {
+  top: 5px;
+  background: #43687b;
+}
+
+.apprentice-owl .owl-ear-a {
+  left: 10px;
+}
+
+.apprentice-owl .owl-ear-b {
+  right: 5px;
+}
+
+.apprentice-owl .owl-eye {
+  top: 25px;
+  width: 10px;
+  height: 10px;
+  background:
+    radial-gradient(circle at 58% 34%, #fff 0 17%, transparent 18%),
+    radial-gradient(circle, #2f241d 0 54%, #d5a24a 56% 74%, transparent 76%);
+}
+
+.apprentice-owl .owl-eye-a {
+  left: 19px;
+}
+
+.apprentice-owl .owl-eye-b {
+  right: 13px;
+}
+
+.apprentice-owl .owl-beak {
+  left: 29px;
+  top: 35px;
+  width: 10px;
+  height: 10px;
+  background: #d89a3d;
+}
+
+.apprentice-owl .owl-wing {
+  top: 28px;
+  width: 29px;
+  height: 42px;
+  border-radius: 72% 28% 76% 24%;
+  background:
+    linear-gradient(160deg, rgba(255, 240, 200, 0.16) 0 18%, transparent 19%),
+    linear-gradient(180deg, #5c7f93, #334f61);
+  box-shadow: inset -6px -5px 0 rgba(28, 45, 55, 0.18);
+}
+
+.apprentice-owl .owl-wing-a {
+  left: -8px;
+  transform: rotate(20deg);
+}
+
+.apprentice-owl .owl-wing-b {
+  right: -7px;
+  transform: rotate(-20deg) scaleX(-1);
+}
+
+.apprentice-owl .runner-satchel {
+  top: 45px;
+  left: 3px;
+  background: #d7a563;
+}
+
+.apprentice-owl .runner-leg {
+  bottom: 2px;
+  width: 14px;
+  height: 9px;
+  border-radius: 2px 2px 7px 7px;
+  background: #d99a3d;
+  clip-path: polygon(0 0, 100% 0, 86% 70%, 64% 46%, 50% 100%, 34% 46%, 14% 70%);
+}
+
+.apprentice-owl .runner-leg-a {
+  left: 18px;
+}
+
+.apprentice-owl .runner-leg-b {
+  left: 33px;
+}
+
+.runner--hurt {
+  animation: owlHitFlash 160ms ease-in-out infinite alternate;
+}
+
+.obstacle-low-branch {
+  box-shadow: inset 0 -6px 0 rgba(55, 32, 20, 0.16), 0 6px 8px rgba(75, 46, 30, 0.12);
+}
+
+@keyframes chaosWarning {
+  from {
+    box-shadow: 0 0 10px rgba(200, 111, 61, 0.28);
+  }
+  to {
+    box-shadow: 0 0 22px rgba(153, 84, 102, 0.48);
+  }
+}
+
+@keyframes owlHitFlash {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(1.22) saturate(0.82);
+  }
+}
+
+@media (max-width: 920px) {
+  .post-stats {
+    grid-template-columns: repeat(5, minmax(64px, 1fr));
+    width: 100%;
+  }
+
+  .chaos {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .post-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .chaos,
+  .chaos-meter {
+    width: 100%;
+  }
+
+  .oak-trunk {
+    left: 44%;
+    transform: scale(0.78);
+    transform-origin: left bottom;
+  }
+
+  .canopy-a {
+    left: 32%;
+    transform: scale(0.78);
+    transform-origin: left bottom;
+  }
+
+  .branch-a,
+  .branch-b,
+  .mail-slot,
+  .window,
+  .lantern,
+  .owl-nest,
+  .owl-pal,
+  .parcel-chute,
+  .round-door {
+    transform: translateX(-78px) scale(0.78);
+    transform-origin: left bottom;
+  }
+
+  .wooden-sign {
+    left: 54%;
+  }
+}

@@ -23,6 +23,11 @@ import {
 const BEST_SCORE_KEY = "owl-post-best-score";
 const TUTORIAL_KEY = "owl-post-tutorial-seen";
 const MOTION_KEY = "owl-post-reduce-motion";
+const MAX_OBSTACLE_LIVES = 3;
+const MAX_CHAOS = 100;
+const CHAOS_PER_NEGLECTED_TASK = 20;
+const CHAOS_REDUCTION_PER_TASK = 6;
+const OBSTACLE_HIT_GRACE_MS = 1400;
 
 class AudioManager {
   constructor() {
@@ -123,6 +128,7 @@ class Runner {
     this.velocityY = 0;
     this.grounded = true;
     this.ducking = false;
+    this.hurtMs = 0;
     this.updateLayout();
   }
 
@@ -153,6 +159,7 @@ class Runner {
     const deltaSeconds = deltaMs / 1000;
     const height = this.ducking ? this.duckHeight : this.height;
     const floorY = this.groundY - height;
+    this.hurtMs = Math.max(0, this.hurtMs - deltaMs);
 
     if (!this.grounded) {
       this.velocityY += 2200 * deltaSeconds;
@@ -175,7 +182,13 @@ class Runner {
     this.element.style.width = `${this.width}px`;
     this.element.style.height = `${height}px`;
     this.element.classList.toggle("runner--jumping", !this.grounded);
+    this.element.classList.toggle("runner--hurt", this.hurtMs > 0);
     this.element.style.transform = `translate3d(${this.x}px, ${this.y}px, 0)`;
+  }
+
+  flashHit() {
+    this.hurtMs = OBSTACLE_HIT_GRACE_MS;
+    this.render();
   }
 
   getCollisionBox() {
@@ -214,7 +227,7 @@ class Obstacle {
   render() {
     const stageHeight = this.stage.getBoundingClientRect().height;
     const groundY = stageHeight * 0.742;
-    const y = this.definition.kind === "air" ? groundY - 142 : groundY - this.height + 6;
+    const y = this.definition.kind === "air" ? groundY - 92 : groundY - this.height + 6;
 
     this.y = y;
     this.element.style.width = `${this.width}px`;
@@ -250,6 +263,17 @@ class ObstacleManager {
     this.obstacles.forEach((obstacle) => obstacle.remove());
     this.obstacles = [];
     this.spawnTimer = 1400;
+  }
+
+  removeObstacle(target) {
+    this.obstacles = this.obstacles.filter((obstacle) => {
+      if (obstacle === target) {
+        obstacle.remove();
+        return false;
+      }
+
+      return true;
+    });
   }
 
   update(deltaMs, elapsedMs, speed, runnerBox) {
@@ -290,10 +314,11 @@ class ObstacleManager {
   spawn(elapsedMs) {
     const seconds = elapsedMs / 1000;
     const available =
-      seconds < 18
+      seconds < 28
         ? OBSTACLE_DEFINITIONS.filter(
             (obstacle) =>
-              obstacle.kind === "ground" && !["wheelbarrow", "parcel-stack", "tiny-bridge"].includes(obstacle.id),
+              obstacle.kind === "ground" &&
+              !["wheelbarrow", "parcel-stack", "tiny-bridge"].includes(obstacle.id),
           )
         : OBSTACLE_DEFINITIONS;
     const definition = chooseRandom(available, this.rng);
@@ -484,7 +509,9 @@ class UI {
     this.time = document.querySelector("#time-value");
     this.level = document.querySelector("#level-value");
     this.best = document.querySelector("#best-value");
-    this.harmony = document.querySelector("#harmony-fill");
+    this.lives = document.querySelector("#lives-value");
+    this.chaos = document.querySelector("#chaos-fill");
+    this.chaosValue = document.querySelector("#chaos-value");
     this.eventBanner = document.querySelector("#event-banner");
     this.eventIcon = document.querySelector("#event-icon");
     this.eventName = document.querySelector("#event-name");
@@ -508,8 +535,10 @@ class UI {
     this.time.textContent = formatTime(game.elapsedMs);
     this.level.textContent = String(getDifficultyLevel(game.elapsedMs));
     this.best.textContent = String(game.bestScore);
-    this.harmony.style.width = `${clamp(game.harmony, 0, 100)}%`;
-    this.harmony.dataset.level = game.harmony < 30 ? "low" : game.harmony < 62 ? "medium" : "high";
+    this.lives.textContent = String(game.obstacleLives);
+    this.chaos.style.width = `${clamp(game.chaos, 0, MAX_CHAOS)}%`;
+    this.chaos.dataset.level = game.chaos >= 76 ? "high" : game.chaos >= 42 ? "medium" : "low";
+    this.chaosValue.textContent = `${Math.round(clamp(game.chaos, 0, MAX_CHAOS))}%`;
     this.pauseButton.disabled = game.state !== "running" && game.state !== "paused";
     this.pauseButton.querySelector("span").textContent = game.state === "paused" ? "Resume" : "Pause";
     this.startButton.querySelector("span").textContent = game.state === "ready" ? "Start" : "Restart";
@@ -560,7 +589,9 @@ class Game {
     this.state = "ready";
     this.elapsedMs = 0;
     this.score = 0;
-    this.harmony = 100;
+    this.chaos = 0;
+    this.obstacleLives = MAX_OBSTACLE_LIVES;
+    this.obstacleGraceMs = 0;
     this.lastTime = 0;
     this.animationId = null;
     this.survivalScoreBank = 0;
@@ -643,7 +674,9 @@ class Game {
     this.cancelLoop();
     this.elapsedMs = 0;
     this.score = 0;
-    this.harmony = 100;
+    this.chaos = 0;
+    this.obstacleLives = MAX_OBSTACLE_LIVES;
+    this.obstacleGraceMs = 0;
     this.survivalScoreBank = 0;
     this.state = "ready";
     this.runner.reset();
@@ -680,6 +713,14 @@ class Game {
 
   handleKeyDown(event) {
     if (event.repeat && event.code !== "ArrowDown") {
+      return;
+    }
+
+    if (event.key === "Enter") {
+      if (this.state === "game-over") {
+        event.preventDefault();
+        this.restart();
+      }
       return;
     }
 
@@ -729,7 +770,7 @@ class Game {
     }
 
     this.score += result.score;
-    this.harmony = clamp(this.harmony + 2.6, 0, 100);
+    this.chaos = clamp(this.chaos - CHAOS_REDUCTION_PER_TASK, 0, MAX_CHAOS);
     this.audio.playTask();
     this.taskManager.render();
     this.ui.renderStatus(this);
@@ -748,6 +789,7 @@ class Game {
 
   update(deltaMs) {
     this.elapsedMs += deltaMs;
+    this.obstacleGraceMs = Math.max(0, this.obstacleGraceMs - deltaMs);
     const speed = getSpeed(this.elapsedMs);
     const level = getDifficultyLevel(this.elapsedMs);
 
@@ -777,8 +819,17 @@ class Game {
 
     if (neglected.length > 0) {
       this.score -= neglected.length * 38;
-      this.harmony -= neglected.length * 18;
+      this.chaos = clamp(
+        this.chaos + neglected.length * CHAOS_PER_NEGLECTED_TASK,
+        0,
+        MAX_CHAOS,
+      );
       this.audio.playNeglect();
+    }
+
+    if (this.chaos >= MAX_CHAOS) {
+      this.endGame("The post office reached full chaos after too many missed stations.");
+      return;
     }
 
     const obstacleResult = this.obstacleManager.update(
@@ -796,12 +847,7 @@ class Game {
     }
 
     if (obstacleResult.hit) {
-      this.endGame(`You bumped into a ${obstacleResult.hit.definition.label} on the mail route.`);
-      return;
-    }
-
-    if (this.harmony <= 0) {
-      this.endGame("Too many Owl Post stations were neglected at once.");
+      this.handleObstacleHit(obstacleResult.hit);
       return;
     }
 
@@ -809,11 +855,35 @@ class Game {
     this.ui.renderStatus(this);
   }
 
-  endGame(reason) {
+  handleObstacleHit(obstacle) {
+    if (this.obstacleGraceMs > 0) {
+      return;
+    }
+
+    this.obstacleGraceMs = OBSTACLE_HIT_GRACE_MS;
+    this.obstacleLives -= 1;
+    this.score -= 42;
+    this.runner.flashHit();
+    this.obstacleManager.removeObstacle(obstacle);
+    this.audio.playCollision();
+
+    if (this.obstacleLives <= 0) {
+      this.endGame(`The apprentice owl used up all three route lives after hitting a ${obstacle.definition.label}.`, {
+        skipCollisionSound: true,
+      });
+      return;
+    }
+
+    this.ui.renderStatus(this);
+  }
+
+  endGame(reason, options = {}) {
     this.state = "game-over";
     this.cancelLoop();
     this.runner.setDucking(false);
-    this.audio.playCollision();
+    if (!options.skipCollisionSound) {
+      this.audio.playCollision();
+    }
     this.score = Math.max(0, Math.round(this.score));
     this.bestScore = Math.max(this.bestScore, this.score);
     localStorage.setItem(BEST_SCORE_KEY, String(this.bestScore));
