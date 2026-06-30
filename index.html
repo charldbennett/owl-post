@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Owl Post, a cosy multitasking endless runner through an enchanted woodland mail route."
+    />
+    <title>Owl Post</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="post-app" aria-labelledby="game-title">
+      <section class="game-shell">
+        <header class="game-header">
+          <div class="title-block">
+            <p class="eyebrow">Woodland mail runner</p>
+            <h1 id="game-title">Owl Post</h1>
+          </div>
+
+          <div class="post-stats" aria-label="Current game status">
+            <div class="stat">
+              <span>Score</span>
+              <strong id="score-value">0</strong>
+            </div>
+            <div class="stat">
+              <span>Time</span>
+              <strong id="time-value">0:00</strong>
+            </div>
+            <div class="stat">
+              <span>Level</span>
+              <strong id="level-value">1</strong>
+            </div>
+            <div class="stat">
+              <span>Best</span>
+              <strong id="best-value">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="task-row" id="task-row" aria-label="Owl Post postcard task stations"></section>
+
+        <section class="stage-wrap" aria-label="Runner play area">
+          <div class="event-banner" id="event-banner" aria-live="polite" hidden>
+            <span id="event-icon" aria-hidden="true"></span>
+            <strong id="event-name"></strong>
+            <span id="event-text"></span>
+          </div>
+
+          <div class="stage" id="stage">
+            <div class="painted-sky clouds" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="painted-sky leaves" id="leaf-layer" aria-hidden="true"></div>
+            <div class="forest-backdrop" aria-hidden="true">
+              <span class="hill hill-a"></span>
+              <span class="hill hill-b"></span>
+              <span class="tree tree-a"></span>
+              <span class="tree tree-b"></span>
+              <span class="tree tree-c"></span>
+            </div>
+            <div class="oak-office" aria-hidden="true">
+              <span class="canopy canopy-a"></span>
+              <span class="canopy canopy-b"></span>
+              <span class="branch branch-a"></span>
+              <span class="branch branch-b"></span>
+              <span class="rope-bridge"></span>
+              <span class="oak-trunk"></span>
+              <span class="round-door"></span>
+              <span class="mail-slot mail-slot-a"></span>
+              <span class="mail-slot mail-slot-b"></span>
+              <span class="mail-slot mail-slot-c"></span>
+              <span class="window window-a"></span>
+              <span class="window window-b"></span>
+              <span class="parcel-chute"><span></span></span>
+              <span class="lantern lantern-a"></span>
+              <span class="lantern lantern-b"></span>
+              <span class="owl-nest owl-nest-a">
+                <span class="tiny-owl tiny-owl-a"></span>
+              </span>
+              <span class="owl-nest owl-nest-b">
+                <span class="tiny-owl tiny-owl-b"></span>
+              </span>
+              <span class="owl-pal owl-pal-a">
+                <span></span>
+              </span>
+              <span class="owl-pal owl-pal-b">
+                <span></span>
+              </span>
+              <span class="paper-plane paper-plane-a"></span>
+              <span class="paper-plane paper-plane-b"></span>
+            </div>
+            <div class="mail-details" aria-hidden="true">
+              <span class="mailbox"></span>
+              <span class="wooden-sign"></span>
+              <span class="mushroom mushroom-a"></span>
+              <span class="mushroom mushroom-b"></span>
+              <span class="signpost"></span>
+            </div>
+            <div class="obstacle-layer" id="obstacle-layer" aria-hidden="true"></div>
+            <div class="runner apprentice-owl" id="runner" aria-hidden="true">
+              <span class="runner-shadow"></span>
+              <span class="owl-ear owl-ear-a"></span>
+              <span class="owl-ear owl-ear-b"></span>
+              <span class="owl-wing owl-wing-a"></span>
+              <span class="owl-wing owl-wing-b"></span>
+              <span class="owl-body"></span>
+              <span class="owl-face"></span>
+              <span class="owl-eye owl-eye-a"></span>
+              <span class="owl-eye owl-eye-b"></span>
+              <span class="owl-beak"></span>
+              <span class="runner-satchel"></span>
+              <span class="runner-leg runner-leg-a"></span>
+              <span class="runner-leg runner-leg-b"></span>
+            </div>
+            <div class="path">
+              <span class="path-line path-line-a"></span>
+              <span class="path-line path-line-b"></span>
+            </div>
+          </div>
+        </section>
+
+        <footer class="control-bar">
+          <div class="harmony" aria-label="Post office calm">
+            <span>Post Office Calm</span>
+            <div class="harmony-meter">
+              <span id="harmony-fill"></span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="start-button" type="button" title="Start or restart">
+              <span>Start</span>
+            </button>
+            <button id="pause-button" type="button" title="Pause or resume" disabled>
+              <span>Pause</span>
+            </button>
+            <button id="restart-button" type="button" title="Restart">
+              <span>Restart</span>
+            </button>
+          </div>
+
+          <label class="motion-toggle">
+            <input id="motion-toggle" type="checkbox" />
+            <span>Reduce motion</span>
+          </label>
+        </footer>
+      </section>
+
+      <section class="tutorial-overlay" id="tutorial-overlay" aria-modal="true" role="dialog">
+        <div class="tutorial-card">
+          <p class="eyebrow">Welcome postkeeper</p>
+          <h2>Deliver the mail and keep the oak office humming.</h2>
+          <ul>
+            <li>Jump over woodland obstacles with Space or Up Arrow.</li>
+            <li>Duck under low branches with Down Arrow.</li>
+            <li>Watch the four postcard stations at the top of the screen.</li>
+            <li>Press 1, 2, 3, or 4 when a mailroom task is ready.</li>
+            <li>Forest events briefly change which station matters most.</li>
+          </ul>
+          <button id="tutorial-button" type="button">
+            <span>Begin route</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="game-over-overlay" id="game-over-overlay" aria-modal="true" role="dialog" hidden>
+        <div class="game-over-card">
+          <p class="eyebrow">Post route resting</p>
+          <h2>Route complete</h2>
+          <p id="game-over-reason"></p>
+          <div class="summary-grid">
+            <div>
+              <span>Score</span>
+              <strong id="final-score">0</strong>
+            </div>
+            <div>
+              <span>Time</span>
+              <strong id="final-time">0:00</strong>
+            </div>
+            <div>
+              <span>Best</span>
+              <strong id="final-best">0</strong>
+            </div>
+          </div>
+          <button id="play-again-button" type="button">
+            <span>Run again</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "owl-post",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node --check src/owlLogic.js && node --check src/main.js",
+    "test": "node --test"
+  }
+}
